@@ -7,6 +7,7 @@ router = routers.DefaultRouter()
 
 router.register("books", views.BooksView)
 router.register("categories", views.CategoriesView)
+router.register("author", views.AuthorView)
 
 urlpatterns = router.urls
 
