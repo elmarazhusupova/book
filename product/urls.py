@@ -1,16 +1,17 @@
 from django.urls import path, include
+from rest_framework import routers
+from .views import CartItemView, BooksView, AuthorView, CategoriesView
 from . import views
-from rest_framework_nested import routers
-
 
 router = routers.DefaultRouter()
+router.register(r'book', BooksView)
+router.register(r'author', AuthorView)
+router.register(r'category', CategoriesView)
+# router.register(r'items', ItemView)
+router.register(r'cart', CartItemView, basename='cart')
 
-router.register("books", views.BooksView)
-router.register("categories", views.CategoriesView)
-router.register("author", views.AuthorView)
-
-urlpatterns = router.urls
 
 urlpatterns = [
-    path("", include(router.urls))
+    path('', include(router.urls)),
+    path('cart/<int:pk>', views.CartItemView.as_view({'get': 'cart_item'}), name='cart_item'),
 ]

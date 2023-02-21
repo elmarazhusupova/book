@@ -43,3 +43,20 @@ class Book(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class CartItem(models.Model):
+    user = models.ForeignKey(Author, on_delete=models.CASCADE)
+    books_name = models.ForeignKey(Book, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+
+    def __str__(self):
+        return str(self.user)
+
+
+# class Item(models.Model):
+#     name = models.ForeignKey(Book, on_delete=models.CASCADE, blank=True, null=True, related_name='book')
+#     # price = models.DecimalField(max_digits=6, decimal_places=2)
+#
+#     def __str__(self):
+#         return str(self.name)

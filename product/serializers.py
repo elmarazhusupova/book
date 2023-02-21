@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Book, Category, Author
+from .models import Book, Category, Author, CartItem
 
 
 class BookSerializer(serializers.ModelSerializer):
@@ -7,12 +7,8 @@ class BookSerializer(serializers.ModelSerializer):
         model = Book
         fields = ['id', 'name', 'desc', 'author', 'category', 'slug', 'old_price', 'price']
 
-    def to_representation(self, instance):
-        rep = super(BookSerializer, self).to_representation(instance)
-        rep['category'] = instance.category.title
-        rep['author'] = f'{instance.author.last_name} {instance.author.first_name}'
-        return rep
-
+    author = serializers.StringRelatedField()
+    category = serializers.StringRelatedField()
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -24,4 +20,19 @@ class CategorySerializer(serializers.ModelSerializer):
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
-        fields = ['name', 'last_name']
+        fields = ['first_name', 'last_name']
+
+
+class CartItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CartItem
+        fields = ('id', 'user', 'books_name', 'quantity')
+
+    # books_name = serializers.StringRelatedField()
+
+
+    def to_representation(self, instance):
+        rep = super(CartItemSerializer, self).to_representation(instance)
+        rep['books_name'] = instance.books_name.name
+        rep['user'] = instance.user.last_name
+        return rep
