@@ -1,4 +1,6 @@
 import uuid
+
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -16,7 +18,6 @@ class Category(models.Model):
     title = models.CharField(max_length=200)
     category_id = models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, unique=True)
     slug = models.SlugField(default=None)
-    # featured_product = models.OneToOneField('Product', on_delete=models.CASCADE, blank=True, null=True, related_name='featured_product')
 
     def __str__(self):
         return self.title
@@ -46,17 +47,9 @@ class Book(models.Model):
 
 
 class CartItem(models.Model):
-    user = models.ForeignKey(Author, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     books_name = models.ForeignKey(Book, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
 
     def __str__(self):
         return str(self.user)
-
-
-# class Item(models.Model):
-#     name = models.ForeignKey(Book, on_delete=models.CASCADE, blank=True, null=True, related_name='book')
-#     # price = models.DecimalField(max_digits=6, decimal_places=2)
-#
-#     def __str__(self):
-#         return str(self.name)

@@ -30,7 +30,6 @@ class CartItemSerializer(serializers.ModelSerializer):
 
     # books_name = serializers.StringRelatedField()
 
-
     def to_representation(self, instance):
         rep = super(CartItemSerializer, self).to_representation(instance)
         rep['books_name'] = instance.books_name.name
