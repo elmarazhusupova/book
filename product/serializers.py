@@ -1,14 +1,12 @@
 from rest_framework import serializers
-from .models import Book, Category, Author, CartItem
+from .models import Book, Category, Author, CartItem, Publisher, Feedback
+from .models import FavoriteBook
 
 
-class BookSerializer(serializers.ModelSerializer):
+class PublisherSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Book
-        fields = ['id', 'name', 'desc', 'author', 'category', 'slug', 'old_price', 'price']
-
-    author = serializers.StringRelatedField()
-    category = serializers.StringRelatedField()
+        model = Publisher
+        fields = '__all__'
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -23,15 +21,41 @@ class AuthorSerializer(serializers.ModelSerializer):
         fields = ['first_name', 'last_name']
 
 
+class BookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = '__all__'
+
+
+class BookListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = ('id', 'name', 'author', 'image', 'price')
+
+
+class FavoriteBookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FavoriteBook
+        fields = ['id', 'book']
+
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
+
+
 class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = CartItem
-        fields = ('id', 'user', 'books_name', 'quantity')
+        fields = ('id', 'user', 'books_name')
 
-    # books_name = serializers.StringRelatedField()
+    # def to_representation(self, instance):
+    #     rep = super(CartItemSerializer, self).to_representation(instance)
+    #     rep['books_name'] = instance.books_name.name
+    #     rep['user'] = instance.user.last_name
+    #     return rep
 
-    def to_representation(self, instance):
-        rep = super(CartItemSerializer, self).to_representation(instance)
-        rep['books_name'] = instance.books_name.name
-        rep['user'] = instance.user.last_name
-        return rep
+
+class FeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
+        fields = '__all__'

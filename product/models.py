@@ -1,14 +1,20 @@
 import uuid
-
-from django.contrib.auth.models import User
 from django.db import models
+from accounts.models import User
+
+class Publisher(models.Model):
+    title = models.CharField(max_length=255)
+    books = models.ForeignKey('Book', on_delete=models.CASCADE, blank=False, null=False, related_name='books')
+
+    def __str__(self):
+        return self.title
 
 
 class Author(models.Model):
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
     image = models.ImageField(upload_to='static/img', blank=True, null=True)
-    # books = models.ForeignKey(Product, )
+    books = models.ForeignKey('Book', on_delete=models.CASCADE, blank=True, null=True, related_name='book')
 
     def __str__(self):
         return self.last_name
@@ -30,26 +36,28 @@ class Book(models.Model):
     desc = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to='static/img', blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, blank=True, null=True, related_name='category')
-    discount = models.BooleanField(default=False)
-    old_price = models.FloatField(default=100.00)
-    slug = models.SlugField(default=None)
+    price = models.FloatField()
+    new_price = models.FloatField(blank=True, null=True)
+    slug = models.SlugField(default=None, blank=True, null=True)
+    published_day = models.DateField(blank=True, null=True)
+    publisher = models.ForeignKey(Publisher, on_delete=models.SET_NULL, blank=True, null=True, related_name='publisher')
+    is_in_stock = models.BooleanField(default=True)
 
-    @property
-    def price(self):
-        if self.discount:
-            new_price = self.old_price - ((30/100)*self.old_price)
-        else:
-            new_price = self.old_price
-        return new_price
 
-    def __str__(self):
-        return self.name
+class FavoriteBook(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
 
 
 class CartItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     books_name = models.ForeignKey(Book, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
 
     def __str__(self):
         return str(self.user)
+
+
+class Feedback(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    feedback = models.TextField()
+    image = models.ImageField(upload_to='static/img', blank=True, null=True)
