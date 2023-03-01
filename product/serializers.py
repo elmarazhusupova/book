@@ -1,6 +1,6 @@
-from rest_framework import serializers
-from .models import Book, Category, Author, CartItem, Publisher, Feedback
+from .models import Book, Category, Author, Publisher, Feedback, Cart
 from .models import FavoriteBook
+from rest_framework import serializers
 
 
 class PublisherSerializer(serializers.ModelSerializer):
@@ -43,16 +43,11 @@ class FavoriteBookSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
-class CartItemSerializer(serializers.ModelSerializer):
+class CartSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CartItem
-        fields = ('id', 'user', 'books_name')
+        model = Cart
+        fields = '__all__'
 
-    # def to_representation(self, instance):
-    #     rep = super(CartItemSerializer, self).to_representation(instance)
-    #     rep['books_name'] = instance.books_name.name
-    #     rep['user'] = instance.user.last_name
-    #     return rep
 
 
 class FeedbackSerializer(serializers.ModelSerializer):

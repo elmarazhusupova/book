@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 from accounts.models import User
 
+
 class Publisher(models.Model):
     title = models.CharField(max_length=255)
     books = models.ForeignKey('Book', on_delete=models.CASCADE, blank=False, null=False, related_name='books')
@@ -43,15 +44,19 @@ class Book(models.Model):
     publisher = models.ForeignKey(Publisher, on_delete=models.SET_NULL, blank=True, null=True, related_name='publisher')
     is_in_stock = models.BooleanField(default=True)
 
+    def __str__(self):
+        return str(self.name)
+
 
 class FavoriteBook(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
 
 
-class CartItem(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    books_name = models.ForeignKey(Book, on_delete=models.CASCADE)
+class Cart(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    books_name = models.ForeignKey(Book, on_delete=models.CASCADE, blank=True, null=True)
+
 
     def __str__(self):
         return str(self.user)
