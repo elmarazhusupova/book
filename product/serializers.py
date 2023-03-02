@@ -1,5 +1,4 @@
-from .models import Book, Category, Author, Publisher, Feedback, Cart
-from .models import FavoriteBook
+from .models import Book, Category, Author, Publisher, Feedback, Cart, FavoriteBook
 from rest_framework import serializers
 
 
@@ -30,7 +29,7 @@ class BookSerializer(serializers.ModelSerializer):
 class BookListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
-        fields = ('id', 'name', 'author', 'image', 'price')
+        fields = ('id', 'name', 'author', 'image')
 
 
 class FavoriteBookSerializer(serializers.ModelSerializer):
@@ -47,7 +46,6 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = '__all__'
-
 
 
 class FeedbackSerializer(serializers.ModelSerializer):

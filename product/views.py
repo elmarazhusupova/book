@@ -1,17 +1,16 @@
 from django.shortcuts import get_object_or_404
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.viewsets import ModelViewSet
 from .filters import ProductFilter
 from .serializers import CategorySerializer, AuthorSerializer, \
-    PublisherSerializer, FavoriteBookSerializer, FeedbackSerializer, BookSerializer, BookListSerializer, CartSerializer
-from .models import Book, Category, Author, Publisher, FavoriteBook, Feedback, Cart
+    PublisherSerializer, FeedbackSerializer, BookSerializer, BookListSerializer, CartSerializer, FavoriteBookSerializer
+from .models import Book, Category, Author, Publisher, Feedback, Cart, FavoriteBook
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import viewsets, status, generics
-
 
 
 class CategoriesView(viewsets.ModelViewSet):
@@ -51,11 +50,12 @@ class FavoriteBookViewSet(viewsets.ModelViewSet):
         return FavoriteBook.objects.filter(user=self.request.user)
 
 
-class CartViewSet(viewsets.ViewSet):
+class CartView(viewsets.ViewSet):
     serializer_class = CartSerializer
+    permission_classes = [AllowAny]
 
     def list(self, request):
-        queryset = Cart.objects.filter(user=request.user)
+        queryset = Cart.objects.all()
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
 
@@ -74,6 +74,14 @@ class CartViewSet(viewsets.ViewSet):
             return Response(serializer.data)
         else:
             return Response({'detail': 'Not found.'}, status=404)
+
+    def remove_from_cart(request, pk=None):
+        try:
+            cart_item = Cart.objects.get(user=request.user, id=pk)
+            cart_item.delete()
+            return Response({'detail': 'Item removed from cart.'}, status=204)
+        except Cart.DoesNotExist:
+            return Response({'detail': 'Item not found in cart.'}, status=404)
 
 
 class FeedbackView(viewsets.ModelViewSet):

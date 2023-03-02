@@ -1,16 +1,14 @@
 from django.urls import path, include
 from rest_framework import routers
-from .views import CartViewSet, AuthorView, CategoriesView, PublisherView, FeedbackView, BookView
+from .views import CartView, AuthorView, CategoriesView, PublisherView, FeedbackView, BookView
 from . import views
-from .views import FavoriteBookViewSet
 
 router = routers.DefaultRouter()
 router.register(r'books', BookView)
 router.register(r'author', AuthorView)
 router.register(r'category', CategoriesView)
-router.register(r'cart', CartViewSet, basename='cart')
+router.register(r'cart', CartView, basename='cart')
 router.register(r'publisher', PublisherView)
-router.register(r'favorite_books', FavoriteBookViewSet, basename='favorite_books')
 router.register(r'feedback', FeedbackView)
 
 urlpatterns = [
