@@ -1,29 +1,25 @@
-from django.contrib.auth import authenticate, login
-from rest_framework import status
+from django.contrib.auth import authenticate, login, logout
+from rest_framework import status, generics, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 from .models import User
-from .serializers import UserSerializer
+from .serializers import RegistrationSerializer, UserLoginSerializer
 
 
-class RegisterView(APIView):
-    serializer_class = UserSerializer
+class UserCreate(generics.CreateAPIView):
+    serializer_class = RegistrationSerializer
     queryset = User.objects.filter()
+    permission_classes = [permissions.AllowAny]
 
-    def post(self, request, *args, **kwargs):
-        serializer = UserSerializer(data=request.data, context={'request': request})
+    def create(self, request, *args, **kwargs):
+        serializer = RegistrationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response('Success')
+        return Response("Account created", status=status.HTTP_201_CREATED)
 
 
-class LoginView(APIView):
-    def post(self, request):
-        email = request.data.get('email')
-        password = request.data.get('password')
-        user = authenticate(email=email, password=password)
-        if user is not None:
-            login(request, user)
-            return Response({'detail': 'Login successful.'}, status=status.HTTP_200_OK)
-        else:
-            return Response({'detail': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
+class LoginView(TokenObtainPairView):
+    serializer_class = UserLoginSerializer
+
