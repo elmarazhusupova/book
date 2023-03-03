@@ -43,9 +43,21 @@ class FavoriteBookSerializer(serializers.ModelSerializer):
 
 
 class CartSerializer(serializers.ModelSerializer):
+    book = BookSerializer()
+
     class Meta:
         model = Cart
-        fields = '__all__'
+        fields = ('id', 'book', 'quantity')
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        book_data = validated_data.pop('book')
+        book = Book.objects.get(id=book_data['id'])
+        cart, created = Cart.objects.get_or_create(user=user, book=book, defaults={'quantity': validated_data['quantity']})
+        if not created:
+            cart.quantity += validated_data['quantity']
+            cart.save()
+        return cart
 
 
 class FeedbackSerializer(serializers.ModelSerializer):

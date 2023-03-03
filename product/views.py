@@ -50,39 +50,27 @@ class FavoriteBookViewSet(viewsets.ModelViewSet):
         return FavoriteBook.objects.filter(user=self.request.user)
 
 
-class CartView(viewsets.ViewSet):
+class CartView(viewsets.ModelViewSet):
     serializer_class = CartSerializer
-    permission_classes = [AllowAny]
 
-    def list(self, request):
-        queryset = Cart.objects.all()
-        serializer = self.serializer_class(queryset, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        return Cart.objects.filter(user=self.request.user)
 
-    def create(self, request):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(serializer.data, status=201)
-        else:
-            return Response(serializer.errors, status=400)
+    @action(detail=False, methods=['post'])
+    def add_book(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def retrieve(self, request, pk=None):
-        queryset = Cart.objects.filter(user=request.user, id=pk)
-        if queryset.exists():
-            serializer = self.serializer_class(queryset.first())
-            return Response(serializer.data)
-        else:
-            return Response({'detail': 'Not found.'}, status=404)
-
-    def remove_from_cart(request, pk=None):
+    @action(detail=True, methods=['delete'])
+    def delete_book(self, request, pk=None):
         try:
-            cart_item = Cart.objects.get(user=request.user, id=pk)
+            cart_item = self.get_queryset().get(id=pk)
             cart_item.delete()
-            return Response({'detail': 'Item removed from cart.'}, status=204)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         except Cart.DoesNotExist:
-            return Response({'detail': 'Item not found in cart.'}, status=404)
-
+            return Response({'detail': 'Item not found in cart.'}, status=status.HTTP_404_NOT_FOUND)
 
 class FeedbackView(viewsets.ModelViewSet):
     queryset = Feedback.objects.all()
