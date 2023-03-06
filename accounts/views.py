@@ -23,3 +23,8 @@ class UserCreate(generics.CreateAPIView):
 class LoginView(TokenObtainPairView):
     serializer_class = UserLoginSerializer
 
+    
+class UserProfileView(viewsets.ModelViewSet):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+
