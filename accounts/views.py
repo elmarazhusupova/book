@@ -1,11 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
-from rest_framework import status, generics, permissions
+from rest_framework import status, generics, permissions, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import User
-from .serializers import RegistrationSerializer, UserLoginSerializer
+from .models import User, UserProfile
+from .serializers import RegistrationSerializer, UserLoginSerializer, UserProfileSerializer
 
 
 class UserCreate(generics.CreateAPIView):

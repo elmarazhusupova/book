@@ -1,5 +1,5 @@
 from django.urls import include, path
-from accounts.views import UserCreate, LoginView
+from accounts.views import UserCreate, LoginView, UserProfileView
 
 
 urlpatterns = [
