@@ -51,3 +51,10 @@ class UserLoginSerializer(TokenObtainPairSerializer):
         else:
             raise serializers.ValidationError('Invalid password!')
         return attrs
+    
+    
+    class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = '__all__'
+
