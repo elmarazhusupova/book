@@ -239,13 +239,31 @@ CORS_ALLOW_METHODS = [
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
-from cloudinary.utils import cloudinary_url
 
 # // Config
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# CLOUDINARY_STORAGE = {
+#     'CLOUD_NAME': 'dc2qnza8a',
+#     'API_KEY': '329992566127437',
+#     'API_SECRET': 'EsM1fKlTP1RshPV7s3dgSlvqpzg'
+# }
+#
+# DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+# cloudinary.config(
+#                   cloud_name = "dc2qnza8a",
+#                   api_key = "329992566127437",
+#                   api_secret = "EsM1fKlTP1RshPV7s3dgSlvqpzg",
+#                   secure = True
+#                   )
+
+import cloudinary
+
 cloudinary.config(
-  cloud_name="dc2qnza8a",
-  api_key="329992566127437",
-  api_secret="EsM1fKlTP1RshPV7s3dgSlvqpzg",
-  secure=True
+cloud_name = "dc2qnza8a",
+api_key = "329992566127437",
+api_secret = "EsM1fKlTP1RshPV7s3dgSlvqpzg",
+api_proxy = "http://proxy.server:9999"
 )
+
+import cloudinary.uploader
+import cloudinary.api
