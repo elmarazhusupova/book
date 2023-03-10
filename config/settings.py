@@ -232,3 +232,17 @@ CORS_ALLOW_METHODS = [
     "POST",
     "PUT",
 ]
+
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+from cloudinary.utils import cloudinary_url
+
+# // Config
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+cloudinary.config(
+  cloud_name="dc2qnza8a",
+  api_key="329992566127437",
+  api_secret="EsM1fKlTP1RshPV7s3dgSlvqpzg",
+  secure=True
+)
