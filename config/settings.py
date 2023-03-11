@@ -9,14 +9,14 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import os
 from datetime import timedelta
 from pathlib import Path
-
-from cloudinary.templatetags import cloudinary
+import dj_database_url
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-from decouple import config
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework_simplejwt',
     'cloudinary',
+    'cloudinary_storage',
 
     'product',
     'accounts',
@@ -82,20 +83,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
-
-
-# Database
-#
-import dj_database_url
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql'
-#     }
-# }
-
-# db = dj_database_url.config(conn_max_age=600)
-# DATABASES['default'].update(db)
 
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 DATABASES = {
@@ -137,7 +124,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -149,15 +135,16 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media/'
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -216,7 +203,7 @@ CORS_ALLOW_ORIGINS = [
     'http://localhost:3001',
     'http://127.0.0.1:3000',
     'http://127.0.0.1:3001',
-    'https://motionbookshop.herokuapp.com/'
+    'https://motionbookshop.herokuapp.com'
 ]
 
 CORS_ORIGIN_WHITELIST = [
@@ -240,30 +227,8 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 
-# // Config
-
-# CLOUDINARY_STORAGE = {
-#     'CLOUD_NAME': 'dc2qnza8a',
-#     'API_KEY': '329992566127437',
-#     'API_SECRET': 'EsM1fKlTP1RshPV7s3dgSlvqpzg'
-# }
-#
-# DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-# cloudinary.config(
-#                   cloud_name = "dc2qnza8a",
-#                   api_key = "329992566127437",
-#                   api_secret = "EsM1fKlTP1RshPV7s3dgSlvqpzg",
-#                   secure = True
-#                   )
-
-import cloudinary
-
-cloudinary.config(
-cloud_name = "dc2qnza8a",
-api_key = "329992566127437",
-api_secret = "EsM1fKlTP1RshPV7s3dgSlvqpzg",
-api_proxy = "http://proxy.server:9999"
-)
-
-import cloudinary.uploader
-import cloudinary.api
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': config('CLOUDINARY_API_KEY'),
+    'API_SECRET': config('CLOUDINARY_API_SECRET')
+}
