@@ -72,6 +72,7 @@ class CartView(viewsets.ModelViewSet):
         except Cart.DoesNotExist:
             return Response({'detail': 'Item not found in cart.'}, status=status.HTTP_404_NOT_FOUND)
 
+
 class FeedbackView(viewsets.ModelViewSet):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
