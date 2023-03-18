@@ -34,7 +34,7 @@ class BookView(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = ProductFilter
     search_fields = ['author__first_name', 'author__last_name', 'category__title', 'name']
-    pagination_class = PageNumberPagination
+    # pagination_class = PageNumberPagination
 
     def get_serializer_class(self):
         if self.action == 'list':
