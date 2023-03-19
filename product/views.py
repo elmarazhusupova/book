@@ -36,10 +36,10 @@ class BookView(viewsets.ModelViewSet):
     search_fields = ['author__first_name', 'author__last_name', 'category__title', 'name']
     # pagination_class = PageNumberPagination
 
-    def get_serializer_class(self):
-        if self.action == 'list':
-            return BookListSerializer
-        return self.serializer_class
+    # def get_serializer_class(self):
+    #     if self.action == 'list':
+    #         return BookListSerializer
+    #     return self.serializer_class
 
 
 class FavoriteBookViewSet(viewsets.ModelViewSet):
